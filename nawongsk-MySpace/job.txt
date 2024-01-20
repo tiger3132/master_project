@@ -1,0 +1,347 @@
+#!/bin/bash
+#SBATCH -p mlhiwidlc_gpu-rtx2080
+#SBATCH --mem 6GB
+#SBATCH -c 1
+#SBATCH -a 58-66 
+#SBATCH --gres=gpu:1
+#SBATCH -D /work/dlclarge1/nawongsk-MySpace
+
+source activate myproject
+echo "Started at $(date)";
+echo "Running job $SLURM_JOB_NAME using $SLURM_JOB_CPUS_PER_NODE cpus per node with given JID $SLURM_JOB_ID on queue $SLURM_JOB_PARTITION";
+
+if [ 1 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --optimizer sgd --momentum 0
+	exit $?
+fi
+
+if [ 2 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 3 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --optimizer sgd --momentum 1
+	exit $?
+fi
+
+if [ 4 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --weight_decay 0.001 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 5 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --weight_decay 0.0001 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 6 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --weight_decay 0.01 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 7 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --weight_decay 0.01 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 8 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --weight_decay 0.001 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 9 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --weight_decay 0.0001 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 10 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.01 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 11 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 12 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.0001 --optimizer sgd --momentum 0.5
+	exit $?
+fi
+
+if [ 13 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --weight_decay 0.001 --optimizer adamw
+	exit $?
+fi
+
+
+if [ 14 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --weight_decay 0.0001 --optimizer adamw
+	exit $?
+fi
+
+
+if [ 15 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --weight_decay 0.01 --optimizer adamw
+	exit $?
+fi
+
+if [ 16 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --weight_decay 0.01 --optimizer adamw
+	exit $?
+fi
+
+if [ 17 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --weight_decay 0.001 --optimizer adamw
+	exit $?
+fi
+
+if [ 18 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --weight_decay 0.0001 --optimizer adamw
+	exit $?
+fi
+
+if [ 19 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.01 --optimizer adamw
+	exit $?
+fi
+
+if [ 20 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw
+	exit $?
+fi
+
+if [ 21 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.0001 --optimizer adamw
+	exit $?
+fi
+
+if [ 22 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 125
+	exit $?
+fi
+
+if [ 23 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 500 
+	exit $?
+fi
+
+if [ 24 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 1000
+	exit $?
+fi
+
+if [ 25 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 125
+	exit $?
+fi
+
+if [ 26 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 500
+	exit $?
+fi
+
+if [ 27 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 1000
+	exit $?
+fi
+
+if [ 28 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 125
+	exit $?
+fi
+
+if [ 29 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 500 
+	exit $?
+fi
+
+if [ 30 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 1000
+	exit $?
+fi
+
+if [ 31 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.01
+	exit $?
+fi
+
+if [ 32 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.02
+	exit $?
+fi
+
+if [ 33 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.04
+	exit $?
+fi
+
+if [ 34 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.01
+	exit $?
+fi
+
+if [ 35 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.02
+	exit $?
+fi
+
+if [ 36 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.04
+	exit $?
+fi
+
+if [ 37 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.01
+	exit $?
+fi
+
+if [ 38 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.02
+	exit $?
+fi
+
+if [ 39 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method uniform --kappa_init_param 0.04
+	exit $?
+fi
+
+if [ 40 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 8
+	exit $?
+fi
+
+if [ 41 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 16
+	exit $?
+fi
+
+if [ 42 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 32
+	exit $?
+fi
+
+if [ 43 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 8
+	exit $?
+fi
+
+if [ 44 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 16
+	exit $?
+fi
+
+if [ 45 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.01 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 32
+	exit $?
+fi
+
+if [ 46 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 8
+	exit $?
+fi
+
+if [ 47 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 16
+	exit $?
+fi
+
+if [ 48 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.1 --optimizer adamcpr --kappa_init_method dependent --kappa_init_param 32
+	exit $?
+fi
+
+if [ 49 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.02
+	exit $?
+fi
+
+if [ 50 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 51 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.05
+	exit $?
+fi
+
+if [ 52 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 100 --lr_decay_factor 0.02
+	exit $?
+fi
+
+if [ 53 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 100 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 54 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 100 --lr_decay_factor 0.05
+	exit $?
+fi
+
+if [ 55 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 400 --lr_decay_factor 0.02
+	exit $?
+fi
+
+if [ 56 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 400 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 57 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 400 --lr_decay_factor 0.05
+	exit $?
+fi
+
+
+if [ 58 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 200 --lr_decay_factor 0.02
+	exit $?
+fi
+
+if [ 59 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 60 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 200 --lr_decay_factor 0.05
+	exit $?
+fi
+
+if [ 61 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 100 --lr_decay_factor 0.02
+	exit $?
+fi
+
+if [ 62 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 100 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 63 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 100 --lr_decay_factor 0.05
+	exit $?
+fi
+
+if [ 64 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 400 --lr_decay_factor 0.02
+	exit $?
+fi
+
+if [ 65 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 400 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 66 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python masterproject.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 400 --lr_decay_factor 0.05
+	exit $?
+fi
+echo "DONE";
+echo "Finished at $(date)";
+
