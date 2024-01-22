@@ -2,7 +2,7 @@
 #SBATCH -p testdlc_gpu-rtx2080
 #SBATCH --mem 6GB
 #SBATCH -c 1
-#SBATCH -a 58-66
+#SBATCH -a 75-82
 #SBATCH -D /work/dlclarge1/nawongsk-MySpace
 
 source activate myproject
@@ -344,6 +344,107 @@ if [ 66 -eq $SLURM_ARRAY_TASK_ID ]; then
 	python graphs.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type linear --lr_warmup_steps 400 --lr_decay_factor 0.05
 	exit $?
 fi
+
+if [ 67 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type constant
+	exit $?
+fi
+
+if [ 68 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.1 --weight_decay 0.001 --optimizer sgd --wd_schedule_type constant --momentum 0.5
+	exit $?
+fi
+
+if [ 69 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.001 --weight_decay 0.001 --optimizer adamcpr --wd_schedule_type constant --kappa_init_method warm_start --kappa_init_param 500
+	exit $?
+fi
+
+if [ 70 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.001 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.1 --data_transform 0
+	exit $?
+fi
+
+if [ 71 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.1 --weight_decay 0.001 --optimizer sgd --wd_schedule_type cosine --momentum 0.5 --lr_warmup_steps 200 --lr_decay_factor 0.1 --data_transform 0
+	exit $?
+fi
+
+if [ 72 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.001 --weight_decay 0.0001 --optimizer adamcpr --kappa_init_method warm_start --kappa_init_param 1000 --lr_warmup_steps 200 --lr_decay_factor 0.1 --data_transform 0
+	exit $?
+fi
+
+if [ 73 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.1 --weight_decay 0.001 --optimizer sgd --wd_schedule_type linear --momentum 0.5 --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 74 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.001 --weight_decay 0.001 --optimizer adamcpr --wd_schedule_type linear --kappa_init_method warm_start --kappa_init_param 1000
+	exit $?
+fi
+
+if [ 75 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.1 --batch_norm 0
+	exit $?
+fi
+
+if [ 76 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --batch_size 64 --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 77 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --batch_size 256 --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 78 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --batch_size 64 --lr 0.1 --weight_decay 0.001 --optimizer sgd --wd_schedule_type cosine --momentum 0.5 --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 79 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --batch_size 256 --lr 0.1 --weight_decay 0.001 --optimizer sgd --wd_schedule_type cosine --momentum 0.5 --lr_warmup_steps 200 --lr_decay_factor 0.1
+	exit $?
+fi
+
+if [ 80 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --batch_size 64 --lr 0.001 --weight_decay 0.001 --optimizer adamcpr --wd_schedule_type cosine --kappa_init_method warm_start --kappa_init_param 1000
+	exit $?
+fi
+
+if [ 81 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --batch_size 256 --lr 0.001 --weight_decay 0.001 --optimizer adamcpr --wd_schedule_type cosine --kappa_init_method warm_start --kappa_init_param 1000
+	exit $?
+fi
+
+if [ 82 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.02 --beta1 0.9 --beta2 0.6
+	exit $?
+fi
+
+if [ 83 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.02 --beta1 0.9 --beta2 0.3
+	exit $?
+fi
+
+if [ 84 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.02 --beta1 0.6 --beta2 0.9
+	exit $?
+fi
+
+if [ 85 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.02 --beta1 0.6 --beta2 0.6
+	exit $?
+fi
+
+if [ 86 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python graphs.py --lr 0.01 --weight_decay 0.001 --optimizer adamw --wd_schedule_type cosine --lr_warmup_steps 200 --lr_decay_factor 0.02 --beta1 0.3 --beta2 0.9
+	exit $?
+fi
+
 echo "DONE";
 echo "Finished at $(date)";
 

@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 import pathlib
 
 parser = ArgumentParser()
+parser.add_argument("--batch_size", type=int, default=128)
 parser.add_argument("--session", type=str, default='test_resnet')
 parser.add_argument("--seed", type=int, default=1)
 parser.add_argument("--max_train_steps", type=int, default=20000)
@@ -34,10 +35,15 @@ parser.add_argument("--kappa_adapt", action=argparse.BooleanOptionalAction)
 parser.add_argument("--apply_lr", action=argparse.BooleanOptionalAction)
 
 
+parser.add_argument("--data_transform", type=int, default=1)
+parser.add_argument("--batch_norm", type=int, default=1)
+
 args = parser.parse_args()
 
 args.kappa_adapt = args.kappa_adapt == 1
 args.apply_lr = args.apply_lr == 1
+args.data_transform = args.data_transform == 1
+args.batch_norm = args.batch_norm == 1
 
 """
 if args.wd_schedule_type == "cosine" or args.wd_schedule_type == "linear":
@@ -53,6 +59,7 @@ else:
 """
 task_name = f"{args.model_name}_seed{args.seed}_steps{args.max_train_steps}"
 #expt_dir.mkdir(parents=True, exist_ok=True)
+"""
 if args.wd_schedule_type == "cosine" or args.wd_schedule_type == "linear":
     if args.optimizer == "sgd":
         expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}"
@@ -67,6 +74,24 @@ else:
         expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}"
     elif args.optimizer == "adamcpr":
         expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}"
+"""
+
+
+if args.wd_schedule_type == "cosine" or args.wd_schedule_type == "linear":
+    if args.optimizer == "sgd":
+        expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}"
+    elif args.optimizer == "adamw":
+        expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}_b1{args.beta1}_b2{args.beta2}"
+    elif args.optimizer == "adamcpr":
+        expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}"
+else:
+    if args.optimizer == "sgd":
+        expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_trans{args.data_transform}_bn{args.batch_norm}"
+    elif args.optimizer == "adamw":
+        expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_trans{args.data_transform}_bn{args.batch_norm}_b1{args.beta1}_b2{args.beta2}"
+    elif args.optimizer == "adamcpr":
+        expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_trans{args.data_transform}_bn{args.batch_norm}"
+
 
 expt_dir = f"/work/dlclarge1/nawongsk-MySpace/{args.output_dir}/{args.session}/{task_name}/{expt_name}/version_0"
 #event = EventAccumulator(f'/work/dlclarge1/nawongsk-MySpace/{args.output_dir}/{args.session}/{args.model_name}_seed{args.seed}_steps{args.max_train_steps}/{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}/version_2')
@@ -143,18 +168,18 @@ expt_dir.mkdir(parents=True, exist_ok=True)
 base_dir = f"hparam_graphs/{args.output_dir}/{args.session}"
 if args.wd_schedule_type == "cosine" or args.wd_schedule_type == "linear":
     if args.optimizer == "sgd":
-        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}.png"
+        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}.png"
     elif args.optimizer == "adamw":
-        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}.png"
+        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}_b1{args.beta1}_b2{args.beta2}.png"
     elif args.optimizer == "adamcpr":
-        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}.png"
+        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}.png"
 else:
     if args.optimizer == "sgd":
-        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}.png"
+        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_trans{args.data_transform}_bn{args.batch_norm}.png"
     elif args.optimizer == "adamw":
-        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}.png"
+        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_trans{args.data_transform}_bn{args.batch_norm}_b1{args.beta1}_b2{args.beta2}.png"
     elif args.optimizer == "adamcpr":
-        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}.png"
+        expt_name = base_dir + "/" + task_name + "/" + f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_trans{args.data_transform}_bn{args.batch_norm}.png"
 plt.savefig(expt_name, bbox_inches="tight")
 """
 # task_name = f"{args.model_name}_seed{args.seed}_steps{args.max_train_steps}"

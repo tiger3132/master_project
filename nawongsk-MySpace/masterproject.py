@@ -107,7 +107,8 @@ class ResNet18(pl.LightningModule):
 
     def forward(self, x: Tensor) -> Tensor:
         x = self.conv1(x)
-        x = self.bn1(x)
+        if self.cfg.batch_norm:
+            x = self.bn1(x)
         x = self.relu(x)
         x = self.layer1(x)
         x = self.layer2(x)
@@ -229,6 +230,9 @@ if __name__ == "__main__":
     parser.add_argument("--lr_warmup_steps", type=int, default=200)
     parser.add_argument("--lr_decay_factor", type=float, default=0.1)
 
+    parser.add_argument("--data_transform", type=int, default=1)
+    parser.add_argument("--batch_norm", type=int, default=1)
+
     parser.add_argument("--output_dir", type=str, default='cifar100')
 
     parser.add_argument("--test_run", type=bool, default=False)
@@ -237,24 +241,26 @@ if __name__ == "__main__":
 
     args.kappa_adapt = args.kappa_adapt == 1
     args.apply_lr = args.apply_lr == 1
+    args.data_transform = args.data_transform == 1
+    args.batch_norm = args.batch_norm == 1
 
     task_name = f"{args.model_name}_seed{args.seed}_steps{args.max_train_steps}"
     expt_dir = pathlib.Path(args.output_dir) / args.session / task_name
     expt_dir.mkdir(parents=True, exist_ok=True)
     if args.wd_schedule_type == "cosine" or args.wd_schedule_type == "linear":
         if args.optimizer == "sgd":
-            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}"
+            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}"
         elif args.optimizer == "adamw":
-            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}"
+            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}_b1{args.beta1}_b2{args.beta2}"
         elif args.optimizer == "adamcpr":
-            expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}"
+            expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_lrwarm{args.lr_warmup_steps}_lrdecay{args.lr_decay_factor}_trans{args.data_transform}_bn{args.batch_norm}"
     else:
         if args.optimizer == "sgd":
-            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}"
+            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_moment{args.momentum}_trans{args.data_transform}_bn{args.batch_norm}"
         elif args.optimizer == "adamw":
-            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}"
+            expt_name = f"{args.optimizer}_l{args.lr}_w{args.weight_decay}_t{args.wd_schedule_type}_trans{args.data_transform}_bn{args.batch_norm}_b1{args.beta1}_b2{args.beta2}"
         elif args.optimizer == "adamcpr":
-            expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}"
+            expt_name = f"{args.optimizer}_p{args.kappa_init_param}_m{args.kappa_init_method}_kf{args.reg_function}_r{args.kappa_update}_l{args.lr}_adapt{args.kappa_adapt}_g{args.apply_lr}_trans{args.data_transform}_bn{args.batch_norm}"
 
     print(expt_name)
     print(task_name)
@@ -264,8 +270,13 @@ if __name__ == "__main__":
 
 
     normalize = transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010], inplace=True)
-    transform_train = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
+
+    if args.data_transform:
+        transform_train = transforms.Compose([transforms.RandomHorizontalFlip(), transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
                                       transforms.ToTensor(), normalize,])
+    else:
+        transform_train = transforms.Compose([transforms.ToTensor(),])
+        
     train_test = transforms.ToTensor()
     train_set = datasets.CIFAR100(root="CIFAR100", download=True, train=True, transform=transform_train)
     # use 10% of training data for validation
@@ -284,7 +295,10 @@ if __name__ == "__main__":
     trainer = pl.Trainer(enable_progress_bar=True, devices=1, accelerator="gpu", max_steps=args.max_train_steps, logger=logger, fast_dev_run=args.test_run)
 
     trainer.fit(model=resnet, train_dataloaders=train_dataload, val_dataloaders=val_dataload)
-    transform_test = transforms.Compose([transforms.ToTensor(), normalize,])
+    if args.data_transform:
+        transform_test = transforms.Compose([transforms.ToTensor(), normalize,])
+    else:
+        transform_test = transforms.Compose([transforms.ToTensor(),])
 
     test_set = datasets.CIFAR100(root="CIFAR100", download=True, train=False, transform=transform_test)
     test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size, shuffle=False, num_workers=2)
