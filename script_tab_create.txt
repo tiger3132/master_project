@@ -1,0 +1,25 @@
+#!/bin/bash
+#SBATCH -p testdlc_gpu-rtx2080
+#SBATCH --mem 6GB
+#SBATCH -c 1
+#SBATCH -a 1 
+#SBATCH -D /work/dlclarge1/nawongsk-MySpace
+
+source activate projectpred
+echo "Started at $(date)";
+echo "Running job $SLURM_JOB_NAME using $SLURM_JOB_CPUS_PER_NODE cpus per node with given JID $SLURM_JOB_ID on queue $SLURM_JOB_PARTITION";
+
+
+if [ 1 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python table_creator.py --lr 0.01 --weight_decay 0.001 --optimizer adamcpr --wd_schedule_type linear --kappa_init_method warm_start --kappa_init_param 1000 --lr_warmup_steps 400 --lr_decay_factor 0.05
+	exit $?
+fi
+
+if [ 2 -eq $SLURM_ARRAY_TASK_ID ]; then
+	python performance_prediction.py
+       	exit $?	
+fi
+
+echo "DONE";
+echo "Finished at $(date)";
+
