@@ -1,1 +1,1 @@
-# master_project
+# Visualization of Training Logs and Performance Prediction
